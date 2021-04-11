@@ -2,25 +2,30 @@ package br.ce.wcaquino.tasks.functional;
 
 import static org.junit.Assert.*;
 
-import java.time.LocalDate;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class TaskTest {
 
-	public WebDriver acessarAplicacao() {
-		WebDriver driver = new ChromeDriver();
-		driver.get("http://localhost:8001/tasks/");
+	public WebDriver acessarAplicacao() throws MalformedURLException {
+		//WebDriver driver = new ChromeDriver();
+		DesiredCapabilities cap = DesiredCapabilities.chrome();
+		WebDriver driver = new RemoteWebDriver(new URL("http://192.168.0.11:4444/wd/hub"), cap);
+		driver.get("http://192.168.0.11:8001/tasks/");
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		return driver;
 	}
 	
 	@Test
-	public void testUserCreatedSuccessfully() throws InterruptedException {
+	public void testUserCreatedSuccessfully() throws InterruptedException, MalformedURLException {
 		WebDriver driver = acessarAplicacao();
 		try {
 			driver.findElement(By.id("addTodo")).click();
@@ -34,7 +39,7 @@ public class TaskTest {
 	}
 	
 	@Test
-	public void testShouldNotAddOldDate() throws InterruptedException {
+	public void testShouldNotAddOldDate() throws InterruptedException, MalformedURLException {
 		WebDriver driver = acessarAplicacao();
 		try {
 		driver.findElement(By.id("addTodo")).click();
@@ -48,7 +53,7 @@ public class TaskTest {
 	}
 	
 	@Test
-	public void testShouldNotAcceptWithoutDescription() throws InterruptedException {
+	public void testShouldNotAcceptWithoutDescription() throws InterruptedException, MalformedURLException {
 		WebDriver driver = acessarAplicacao();
 		try {
 		driver.findElement(By.id("addTodo")).click();
@@ -61,7 +66,7 @@ public class TaskTest {
 	}
 	
 	@Test
-	public void testShouldNotAcceptWithoutDate() throws InterruptedException {
+	public void testShouldNotAcceptWithoutDate() throws InterruptedException, MalformedURLException {
 		WebDriver driver = acessarAplicacao();
 		try {
 		driver.findElement(By.id("addTodo")).click();
