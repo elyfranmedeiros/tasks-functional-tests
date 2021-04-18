@@ -16,9 +16,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 public class TaskTest {
 
 	public WebDriver acessarAplicacao() throws MalformedURLException {
-		//WebDriver driver = new ChromeDriver();
-		DesiredCapabilities cap = DesiredCapabilities.chrome();
-		WebDriver driver = new RemoteWebDriver(new URL("http://192.168.0.11:4444/wd/hub"), cap);
+		WebDriver driver = new ChromeDriver();
+		//DesiredCapabilities cap = DesiredCapabilities.chrome();
+		//WebDriver driver = new RemoteWebDriver(new URL("http://192.168.0.11:4444/wd/hub"), cap);
 		driver.get("http://192.168.0.11:8001/tasks/");
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		return driver;
@@ -73,6 +73,23 @@ public class TaskTest {
 		driver.findElement(By.id("task")).sendKeys("Task Name");
 		driver.findElement(By.id("saveButton")).click();
 		assertEquals("Fill the due date", driver.findElement(By.id("message")).getText());
+		} finally {
+			driver.quit();
+		}
+	}
+	
+	@Test
+	public void testRemoveSuccessfully() throws MalformedURLException, InterruptedException {
+		WebDriver driver = acessarAplicacao();
+		try {
+			driver.findElement(By.id("addTodo")).click();
+			driver.findElement(By.id("task")).sendKeys("Task Name");
+			driver.findElement(By.id("dueDate")).sendKeys("25/12/2030");
+			driver.findElement(By.id("saveButton")).click();
+			assertEquals("Success!", driver.findElement(By.id("message")).getText());
+			
+			driver.findElement(By.xpath("//*[@id='todoTable']//tbody//a[1]")).click();
+			assertEquals("Success!", driver.findElement(By.id("message")).getText());
 		} finally {
 			driver.quit();
 		}
